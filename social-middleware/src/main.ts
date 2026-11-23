@@ -51,7 +51,13 @@ async function bootstrap() {
     const formsUrl = config.get<string>('FORMS_URL') || 'http://localhost:8080';
 
     // Enable CORS to handle preflight OPTIONS requests
-    const allowedOrigins = [frontendUrl, apiUrl, formsUrl];
+    const portalUrl = config.get<string>('PORTAL_FRONTEND_URL')?.trim();
+    const allowedOrigins = [
+      frontendUrl,
+      apiUrl,
+      formsUrl,
+      ...(portalUrl ? [portalUrl] : []),
+    ];
     logger.log('CORS Configuration:');
     logger.log('Allowed origins:', allowedOrigins);
 
@@ -129,7 +135,10 @@ async function bootstrap() {
       .build();
 
     const document = SwaggerModule.createDocument(app, swaggerConfig);
-    SwaggerModule.setup('api', app, document);
+    // Serves the Swagger UI at /api and the raw OpenAPI document as JSON at /api-json
+    SwaggerModule.setup('api', app, document, {
+      jsonDocumentUrl: 'api-json',
+    });
 
     app.use(cookieParser());
 

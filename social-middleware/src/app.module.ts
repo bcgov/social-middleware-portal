@@ -18,6 +18,7 @@ import { FormsModule } from './forms/forms.module';
 import { HealthModule } from './health/health.module';
 import { HouseholdModule } from './household/household.module';
 import { NotificationModule } from './notifications/notification.module';
+import { PortalAuthModule } from './portal-auth/portal-auth.module';
 import { SiebelModule } from './siebel/siebel.module';
 import { ResourceCaseModule } from './resource-case/resource-case.module';
 
@@ -49,6 +50,7 @@ export class AppModule {
         }),
         HttpModule,
         AuthModule,
+        PortalAuthModule,
         DataRetentionModule,
         ScheduleModule.forRoot(),
         LoggerModule.forRootAsync({
