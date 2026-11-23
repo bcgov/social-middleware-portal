@@ -2,11 +2,13 @@ import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { PortalAuthService } from './portal-auth.service';
 
-const SECRET = 'test-secret';
+const PORTAL_SECRET = 'portal-test-secret';
+const CAREGIVER_SECRET = 'caregiver-test-secret';
 
 describe('PortalAuthService', () => {
   const env: Record<string, string> = {
-    JWT_SECRET: SECRET,
+    PORTAL_JWT_SECRET: PORTAL_SECRET,
+    JWT_SECRET: CAREGIVER_SECRET,
     NODE_ENV: 'test',
     PORTAL_FRONTEND_URL: 'http://localhost:5174/',
   };
@@ -87,13 +89,18 @@ describe('PortalAuthService', () => {
     expect(payload?.contactId).toBeUndefined();
   });
 
-  it('rejects a caregiver-style token (no portal audience) and revoked tokens', async () => {
+  it('rejects caregiver tokens, tokens without the portal audience, and revoked tokens', async () => {
     const caregiverToken = jwt.sign(
       { ...user, userId: 'u1', jti: 'j1' },
-      SECRET,
+      CAREGIVER_SECRET,
     );
     expect(
       await service.verifySession(reqWith({ portal_session: caregiverToken })),
+    ).toBeNull();
+
+    const noAudienceToken = jwt.sign({ ...user, jti: 'j2' }, PORTAL_SECRET);
+    expect(
+      await service.verifySession(reqWith({ portal_session: noAudienceToken })),
     ).toBeNull();
 
     siebel.getContactByBcscId.mockResolvedValue(null);

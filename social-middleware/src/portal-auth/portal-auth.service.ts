@@ -52,10 +52,7 @@ export class PortalAuthService {
   }
 
   private get secret(): string {
-    return (
-      this.configService.get<string>('PORTAL_JWT_SECRET') ||
-      this.configService.get<string>('JWT_SECRET')!
-    );
+    return this.configService.get<string>('PORTAL_JWT_SECRET')!;
   }
 
   /** Validates the OIDC claims. Only what the portal needs: no address or birthdate. */

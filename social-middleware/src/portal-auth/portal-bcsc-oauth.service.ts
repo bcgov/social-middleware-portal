@@ -33,19 +33,12 @@ export class PortalBcscOAuthService {
     return `${middlewareUrl}/portal/auth/callback`;
   }
 
-  // A separate BCSC client can be used for the portal; falls back to the caregiver client
   private get clientId(): string {
-    return (
-      this.configService.get<string>('PORTAL_BCSC_CLIENT_ID') ||
-      this.configService.get<string>('BCSC_CLIENT_ID')!
-    );
+    return this.configService.get<string>('PORTAL_BCSC_CLIENT_ID')!;
   }
 
   private get clientSecret(): string {
-    return (
-      this.configService.get<string>('PORTAL_BCSC_CLIENT_SECRET') ||
-      this.configService.get<string>('BCSC_CLIENT_SECRET')!
-    );
+    return this.configService.get<string>('PORTAL_BCSC_CLIENT_SECRET')!;
   }
 
   private get authority(): string {
